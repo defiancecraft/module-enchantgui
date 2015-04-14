@@ -29,8 +29,6 @@ public class EnchantGUIPlugin extends JavaPlugin implements Module {
     	CommandRegistry.registerPlayerSubCommand("enchantgui", "defiancecraft.enchantgui.table", EnchantCommands::table);
     	CommandRegistry.registerUniversalSubCommand("enchantgui", "defiancecraft.enchantgui.reload", (s, a) -> { return EnchantCommands.reload(this, s, a); });
     	CommandRegistry.registerPlayerCommand(this, "enchant", (s, a) -> { return EnchantCommands.enchant(this, s, a); });	
-    	// TODO register cmds & plugin.yml
-    	// TODO lapis
     	
     }
     
