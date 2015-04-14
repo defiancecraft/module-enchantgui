@@ -9,8 +9,10 @@ import java.util.Map;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
+import com.defiancecraft.modules.enchantgui.util.ItemClass;
 import com.defiancecraft.modules.enchantgui.util.MaterialParser;
 
 public class EnchantGUIConfig {
@@ -70,6 +72,16 @@ public class EnchantGUIConfig {
 	public String onlyOneItemMsg = "&4You may only enchant one item at a time!";
 	public String sameLevelMsg = "&4You already have this level of enchantment.";
 	
+	// Random Enchantments
+	public int randomCost1 = 5;
+	public int randomCost2 = 10;
+	public int randomCost3 = 15;
+	public List<String> randomEnchantments = Arrays.asList("DAMAGE_ALL:5:100:TS", "PROTECTION_ENVIRONMENTAL:1:20:A");
+	
+	// Enchant command
+	public String enchantCommandPermission = "enchantgui.enchant";
+	public String enchantCommandMsg = "&aBuy HERO to get this command!";
+	
 	public boolean isWhitelistedWorld(String worldName) {
 		for (String world : whitelistWorlds)
 			if (world.equalsIgnoreCase(worldName)) return true;
@@ -90,6 +102,74 @@ public class EnchantGUIConfig {
 	
 	public int getSelectMenuRows() {
 		return enchantmentTypes.size();
+	}
+	
+	public List<RandomEnchantment> getRandomEnchantments() {
+		
+		List<RandomEnchantment> enchantments = new ArrayList<RandomEnchantment>();
+		
+		for (String serialized : this.randomEnchantments) {
+			
+			if (serialized == null || serialized.isEmpty() || serialized.split(":").length < 3)
+				continue;
+			
+			// Get all of the parts of the serialized string
+			String typeStr    = serialized.split(":")[0];
+			String levelStr   = serialized.split(":")[1];
+			String chanceStr  = serialized.split(":")[2];
+			String classesStr = serialized.split(":").length > 3 ? serialized.split(":")[3] : "TSA"; // Allow for any type if classes are omitted
+			
+			int level, chance;
+			Enchantment type;
+			
+			try {
+				
+				level = Integer.parseInt(levelStr);
+				chance = Integer.parseInt(chanceStr);
+				type = Enchantment.getByName(typeStr);
+				
+				if (type == null) throw new IllegalArgumentException();
+				
+			} catch (IllegalArgumentException e) {
+			
+				// Continue if NumberFormatException or Enchantment is invalid
+				continue;
+				
+			}
+			
+			List<ItemClass> classList = new ArrayList<ItemClass>();
+			
+			// Parse the characters in the classes string to their respective ItemClasses
+			for (char c : classesStr.toUpperCase().toCharArray())
+				if (ItemClass.getItemClass(c) != null)
+					classList.add(ItemClass.getItemClass(c));
+			
+			// Add all if none were valid
+			if (classList.size() == 0)
+				classList.addAll(Arrays.asList(new ItemClass[]{ ItemClass.ARMOR, ItemClass.TOOL, ItemClass.SWORD }));
+			
+			enchantments.add(new RandomEnchantment(type, level, classList.toArray(new ItemClass[]{}), chance));
+			
+		}
+		
+		return enchantments;
+		
+	}
+	
+	public static class RandomEnchantment {
+		
+		public Enchantment type;
+		public int level;
+		public ItemClass[] classes;
+		public int chance;
+		
+		RandomEnchantment(Enchantment type, int level, ItemClass[] classes, int chance) {
+			this.type = type;
+			this.level = level;
+			this.classes = classes;
+			this.chance = chance;
+		}
+		
 	}
 	
 	public static class EnchantmentTypeConfig {

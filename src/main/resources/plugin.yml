@@ -1,3 +1,6 @@
 name: EnchantGUI
 version: 1.0.0
 main: com.defiancecraft.modules.enchantgui.EnchantGUIPlugin
+commands:
+  enchantgui:
+  enchant:

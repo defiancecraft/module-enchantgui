@@ -2,7 +2,11 @@ package com.defiancecraft.modules.enchantgui.menus;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EnchantingInventory;
+import org.bukkit.inventory.InventoryView;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -51,12 +55,23 @@ public class EnchantMenu extends Menu {
 	
 	private void onTableClick(Player player) {
 		
+		EnchantGUIConfig config = EnchantGUIPlugin.getConfiguration();
+		Location loc = config.getTableLocation();
+		
+		// Ensure enchantment table is setup for Player#openEnchanting()
+		if (!loc.getBlock().getType().equals(Material.ENCHANTMENT_TABLE)) {
+			player.sendMessage(ChatColor.RED + "Please notify semmeess that he has not set up this correctly.");
+			return;
+		}
+		
 		this.closeMenu(player);
-		Location loc = EnchantGUIPlugin.getConfiguration().getTableLocation();
 		
 		new BukkitRunnable() {
+			@SuppressWarnings("deprecation")
 			public void run() {
-				player.openEnchanting(loc, true);
+				InventoryView view = player.openEnchanting(loc, true);
+				((EnchantingInventory)view.getTopInventory()).setSecondary(new ItemStack(Material.INK_SACK, 64, (short)4));
+				player.updateInventory();
 			}
 		}.runTask(plugin);
 		
