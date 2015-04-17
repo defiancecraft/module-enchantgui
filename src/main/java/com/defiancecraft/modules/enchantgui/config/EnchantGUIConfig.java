@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -101,7 +102,11 @@ public class EnchantGUIConfig {
 	}
 	
 	public int getSelectMenuRows() {
-		return enchantmentTypes.size();
+		try {
+			return enchantmentTypes.entrySet().stream().mapToInt((e) -> e.getValue().row).max().getAsInt() + 1;
+		} catch (NoSuchElementException e) {
+			return 1;
+		}
 	}
 	
 	public List<RandomEnchantment> getRandomEnchantments() {
