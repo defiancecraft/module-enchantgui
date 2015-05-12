@@ -55,13 +55,6 @@ public class PageSelectEnchantment extends Menu {
 	}
 	
 	@Override
-	protected void init() {
-		// Only init if playerUUID is initialized! Required to addMenuOptions
-		if (this.playerUUID != null)
-			super.init();
-	}
-	
-	@Override
 	protected void addMenuOptions() {
 
 		// Return if not initialized

@@ -31,6 +31,7 @@ public class EnchantMenu extends Menu {
 		);
 		this.plugin = p;
 		this.setCloseOnClickOutside(true);
+		super.init();
 	}
 
 	@Override

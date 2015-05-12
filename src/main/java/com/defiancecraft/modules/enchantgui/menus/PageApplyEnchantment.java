@@ -35,6 +35,7 @@ public class PageApplyEnchantment extends Menu {
 		this.enchantment = ench;
 		this.level = level;
 		this.cost = cost;
+		super.init();
 	}
 
 	@Override
