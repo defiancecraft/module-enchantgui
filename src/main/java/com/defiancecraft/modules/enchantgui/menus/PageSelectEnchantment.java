@@ -34,8 +34,8 @@ public class PageSelectEnchantment extends Menu {
 	public PageSelectEnchantment(Plugin p, UUID uuid, String category) {
 		super(
 			ChatColor.translateAlternateColorCodes('&', EnchantGUIPlugin.getConfiguration().menuSelectTitle),
-			EnchantGUIPlugin.getConfiguration().getSelectMenuRows(),
-			new AbsoluteMenuLayout(EnchantGUIPlugin.getConfiguration().getSelectMenuRows()));
+			EnchantGUIPlugin.getConfiguration().getSelectMenuRows(category),
+			new AbsoluteMenuLayout(EnchantGUIPlugin.getConfiguration().getSelectMenuRows(category)));
 		this.plugin = p;
 		this.playerUUID = uuid;
 		this.category = category;
