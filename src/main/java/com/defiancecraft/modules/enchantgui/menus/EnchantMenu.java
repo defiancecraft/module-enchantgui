@@ -79,7 +79,7 @@ public class EnchantMenu extends Menu {
 	}
 	
 	private void onTokenClick(Player player) {
-		Menu.switchMenu(player, this, new PageSelectEnchantment(plugin, player.getUniqueId()), plugin);
+		Menu.switchMenu(player, this, new PageSelectCategory(plugin, player.getUniqueId()), plugin);
 	}
 
 }
