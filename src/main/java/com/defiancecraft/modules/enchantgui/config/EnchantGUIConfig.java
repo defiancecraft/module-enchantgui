@@ -108,10 +108,12 @@ public class EnchantGUIConfig {
 		return MaterialParser.parseMaterialString(menuTableItem, Material.DOUBLE_PLANT);
 	}
 	
-	public int getSelectMenuRows() {
+	public int getSelectMenuRows(String category) {
 		try {
 			// Get the maximum row for any enchantment type
-			return enchantmentTypes.size();
+			return (int) enchantmentTypes.values().stream()
+					.filter((config) -> config.category.equalsIgnoreCase(category))
+					.count();
 		} catch (NoSuchElementException e) {
 			return 1;
 		}
