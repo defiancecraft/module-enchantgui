@@ -28,15 +28,17 @@ public class PageSelectEnchantment extends Menu {
 
 	private Plugin plugin;
 	private UUID playerUUID;
+	private String category;
 	private double playerBalance = 0;
 	
-	public PageSelectEnchantment(Plugin p, UUID uuid) {
+	public PageSelectEnchantment(Plugin p, UUID uuid, String category) {
 		super(
 			ChatColor.translateAlternateColorCodes('&', EnchantGUIPlugin.getConfiguration().menuSelectTitle),
 			EnchantGUIPlugin.getConfiguration().getSelectMenuRows(),
 			new AbsoluteMenuLayout(EnchantGUIPlugin.getConfiguration().getSelectMenuRows()));
 		this.plugin = p;
 		this.playerUUID = uuid;
+		this.category = category;
 		this.setCloseOnClickOutside(true);
 		this.calculateTokens();
 		this.init();
@@ -73,6 +75,10 @@ public class PageSelectEnchantment extends Menu {
 			int column = 0;
 			Enchantment ench = Enchantment.getByName(entry.getKey());
 			EnchantmentTypeConfig config = entry.getValue();
+			
+			// Do not show the enchantment type if it is not the correct category!
+			if (!config.category.equalsIgnoreCase(this.category))
+				continue;
 			
 			for (Entry<Integer, EnchantmentLevelConfig> levelEntry : config.levels.entrySet()) {
 				
