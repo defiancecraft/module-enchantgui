@@ -6,12 +6,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import com.defiancecraft.modules.enchantgui.util.ItemClass;
 import com.defiancecraft.modules.enchantgui.util.MaterialParser;
@@ -47,6 +50,8 @@ public class EnchantGUIConfig {
 	public String menuSelectTitle = "Select Enchantment";
 	public String menuApplyTitle = "Enchant Item!";
 	
+	public String menuCategoriesTitle = "Choose Category";
+	
 	public String menuApplyItem = "IRON_FENCE";
 	public String menuApplyText = "Put item in the middle!";
 	public List<String> menuApplyLore = Arrays.asList("&aOoO SpoOky!");
@@ -68,6 +73,9 @@ public class EnchantGUIConfig {
 	// Enchantment Types
 	public String enchantmentPoorLore = "&4You do not have enough tokens.";
 	public Map<String, EnchantmentTypeConfig> enchantmentTypes = DEFAULT_ENCHANTMENT_TYPES;
+	
+	// List of categories; each enchantment type belongs to a category. Players choose categories in first screen
+	public List<CategoryConfig> categories = new ArrayList<>(Arrays.asList(new CategoryConfig()));
 	
 	// Various messages
 	public String onlyOneItemMsg = "&4You may only enchant one item at a time!";
@@ -103,10 +111,18 @@ public class EnchantGUIConfig {
 	
 	public int getSelectMenuRows() {
 		try {
+			// Get the maximum row for any enchantment type
 			return enchantmentTypes.entrySet().stream().mapToInt((e) -> e.getValue().row).max().getAsInt() + 1;
 		} catch (NoSuchElementException e) {
 			return 1;
 		}
+	}
+	
+	public int getCategoriesMenuRows() {
+		
+		// Gets the minimum number of rows needed to list all categories
+		return (categories.size() / 9) + 1;
+		
 	}
 	
 	public List<RandomEnchantment> getRandomEnchantments() {
@@ -180,6 +196,7 @@ public class EnchantGUIConfig {
 	public static class EnchantmentTypeConfig {
 		
 		public String friendlyName;
+		public String category;
 		public String item;
 		public int row = 0;
 		public List<String> lore = new ArrayList<String>();
@@ -201,6 +218,36 @@ public class EnchantGUIConfig {
 		}
 		
 		public EnchantmentLevelConfig() {}
+		
+	}
+	
+	public static class CategoryConfig {
+		
+		public String name = "swords";
+		public String item = "DIAMOND_SWORD";
+		public String friendlyName = "&bSwords";
+		public List<String> lore = Arrays.asList("&9The swords category.");
+		
+		public ItemStack getItem() {
+			ItemStack item = MaterialParser.parseMaterialString(this.item, Material.EGG);
+			ItemMeta meta  = item.getItemMeta();
+			
+			// Set display name
+			if (friendlyName != null && !friendlyName.isEmpty())
+				meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', friendlyName));
+
+			// Set lore
+			if (lore != null && lore.size() > 0)
+				meta.setLore(lore.stream().map(CategoryConfig::translateCodes).collect(Collectors.toList()));
+			
+			item.setItemMeta(meta);
+			return item;
+		}
+		
+		// Callback for streams
+		public static String translateCodes(String s) {
+			return ChatColor.translateAlternateColorCodes('&', s);
+		}
 		
 	}
 	
