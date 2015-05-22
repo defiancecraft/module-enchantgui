@@ -35,7 +35,6 @@ public class EnchantGUIConfig {
 		sharpnessConfig.friendlyName = "&9Sharpness {level} ({cost})";
 		sharpnessConfig.lore = Arrays.asList("Enchant with sharpness!");
 		sharpnessConfig.levels = sharpnessLevels;
-		sharpnessConfig.row = 0;
 		sharpnessConfig.item = "DIAMOND_SWORD";
 		
 		DEFAULT_ENCHANTMENT_TYPES.put("DAMAGE_ALL", sharpnessConfig);
@@ -112,7 +111,7 @@ public class EnchantGUIConfig {
 	public int getSelectMenuRows() {
 		try {
 			// Get the maximum row for any enchantment type
-			return enchantmentTypes.entrySet().stream().mapToInt((e) -> e.getValue().row).max().getAsInt() + 1;
+			return enchantmentTypes.size();
 		} catch (NoSuchElementException e) {
 			return 1;
 		}
@@ -198,7 +197,6 @@ public class EnchantGUIConfig {
 		public String friendlyName;
 		public String category;
 		public String item;
-		public int row = 0;
 		public List<String> lore = new ArrayList<String>();
 		public Map<Integer, EnchantmentLevelConfig> levels = new HashMap<Integer, EnchantmentLevelConfig>();
 		

@@ -67,11 +67,12 @@ public class PageSelectEnchantment extends Menu {
 		
 		if (player == null)
 			throw new IllegalStateException("Player is not online");
+
+		int row = 0;
 		
 		// Fill the menu with enchantment types and levels; each enchantment type goes on its own row.
 		for (Entry<String, EnchantmentTypeConfig> entry : EnchantGUIPlugin.getConfiguration().enchantmentTypes.entrySet()) {
 
-			int row = entry.getValue().row;
 			int column = 0;
 			Enchantment ench = Enchantment.getByName(entry.getKey());
 			EnchantmentTypeConfig config = entry.getValue();
@@ -136,6 +137,9 @@ public class PageSelectEnchantment extends Menu {
 				column++;
 				
 			}
+			
+			// Increment the row
+			row++;
 			
 		}
 		
