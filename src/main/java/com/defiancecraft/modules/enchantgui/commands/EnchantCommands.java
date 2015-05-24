@@ -1,7 +1,6 @@
 package com.defiancecraft.modules.enchantgui.commands;
 
 import java.util.HashSet;
-import java.util.Map;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -10,15 +9,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import com.defiancecraft.core.DefianceCore;
-import com.defiancecraft.core.util.FileUtils;
 import com.defiancecraft.modules.enchantgui.EnchantGUIPlugin;
 import com.defiancecraft.modules.enchantgui.config.EnchantGUIConfig;
 import com.defiancecraft.modules.enchantgui.menus.EnchantMenu;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.reflect.TypeToken;
 
 public class EnchantCommands {
 
@@ -33,7 +26,7 @@ public class EnchantCommands {
 		return true;
 	}
 	
-	public static boolean table(CommandSender sender, String[] args) {
+	public static boolean table(EnchantGUIPlugin plugin, CommandSender sender, String[] args) {
 		
 		if (!(sender instanceof Player)) return false;
 		
@@ -47,7 +40,6 @@ public class EnchantCommands {
 			return true;
 		}
 
-		Gson gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
 		EnchantGUIConfig config = EnchantGUIPlugin.getConfiguration();
 		config.tableWorld = target.getWorld().getName();
 		config.tableX = target.getX();
@@ -55,9 +47,7 @@ public class EnchantCommands {
 		config.tableZ = target.getZ();
 		 
 		// Save the config
-		DefianceCore.getModuleConfig().configs.put("EnchantGUI", gson.fromJson(gson.toJsonTree(config), new TypeToken<Map<String, JsonElement>>(){}.getType()));
-		DefianceCore.getModuleConfig().save(FileUtils.getSharedConfig("modules.json"));
-		
+		plugin.saveConfig(config);
 		sender.sendMessage(ChatColor.GREEN + "Set the enchantment table location.");
 		
 		return true;

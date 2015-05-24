@@ -1,17 +1,14 @@
 package com.defiancecraft.modules.enchantgui;
 
-import org.bukkit.plugin.java.JavaPlugin;
-
-import com.defiancecraft.core.DefianceCore;
 import com.defiancecraft.core.command.CommandRegistry;
 import com.defiancecraft.core.database.collections.Collection;
 import com.defiancecraft.core.menu.MenuListener;
-import com.defiancecraft.core.modules.Module;
+import com.defiancecraft.core.modules.impl.JavaModule;
 import com.defiancecraft.modules.enchantgui.commands.EnchantCommands;
 import com.defiancecraft.modules.enchantgui.config.EnchantGUIConfig;
 import com.defiancecraft.modules.enchantgui.listeners.EnchantListener;
 
-public class EnchantGUIPlugin extends JavaPlugin implements Module {
+public class EnchantGUIPlugin extends JavaModule {
 
 	private static EnchantGUIConfig config;
 	
@@ -26,7 +23,7 @@ public class EnchantGUIPlugin extends JavaPlugin implements Module {
     	
     	// Register commands
     	CommandRegistry.registerUniversalCommand(this, "enchantgui", "defiancecraft.enchantgui", EnchantCommands::help);
-    	CommandRegistry.registerPlayerSubCommand("enchantgui", "table", "defiancecraft.enchantgui.table", EnchantCommands::table);
+    	CommandRegistry.registerPlayerSubCommand("enchantgui", "table", "defiancecraft.enchantgui.table", (s, a) -> { return EnchantCommands.table(this, s, a); });
     	CommandRegistry.registerUniversalSubCommand("enchantgui", "reload", "defiancecraft.enchantgui.reload", (s, a) -> { return EnchantCommands.reload(this, s, a); });
     	CommandRegistry.registerPlayerCommand(this, "enchant", (s, a) -> { return EnchantCommands.enchant(this, s, a); });	
     	
@@ -39,7 +36,6 @@ public class EnchantGUIPlugin extends JavaPlugin implements Module {
     }
     
     public void reloadConfiguration() {
-    	DefianceCore.reloadModuleConfig();
     	EnchantGUIPlugin.config = getConfig(EnchantGUIConfig.class);
     }
     
@@ -55,6 +51,11 @@ public class EnchantGUIPlugin extends JavaPlugin implements Module {
     @Override
     public Collection[] getCollections() {
         return new Collection[] {};
+    }
+    
+    public boolean saveConfig(EnchantGUIConfig instance) {
+    	config = instance;
+    	return super.saveConfig(instance);
     }
 
 }
