@@ -84,7 +84,16 @@ public class EnchantGUIConfig {
 	public int randomCost1 = 5;
 	public int randomCost2 = 10;
 	public int randomCost3 = 15;
-	public List<String> randomEnchantments = Arrays.asList("DAMAGE_ALL:5:100:TS", "PROTECTION_ENVIRONMENTAL:1:20:A");
+	
+	// Random enchantments are defined as a list of strings in the format:
+	// type:level:chance:classes[:message[:broadcast]]
+	// type      -- Enchantment type (in the org.bukkit.Enchantment enum)
+	// level     -- Enchantment level
+	// chance    -- Chance of receiving (1 in x)
+	// classes   -- Classes to apply to (concatenation of characters (T)ools, (S)words,  and (A)rmor)
+	// message   -- Message to send to the user upon receiving the enchant
+	// broadcast -- Message to broadcast to server when player gets the enchant. {player} is replaced with their name. 
+	public List<String> randomEnchantments = Arrays.asList("DAMAGE_ALL:5:100:TS", "PROTECTION_ENVIRONMENTAL:1:20:A", "DAMAGE_ALL:10:2000:TS:&aYou just received a super-rare enchant!:&a&l{player} just received a super-rarem enchant!");
 	
 	// Enchant command
 	public String enchantCommandPermission = "enchantgui.enchant";
@@ -135,11 +144,15 @@ public class EnchantGUIConfig {
 			if (serialized == null || serialized.isEmpty() || serialized.split(":").length < 3)
 				continue;
 			
+			// Enchant Type : Level : Chance : Applicable Classes (T)ools (S)words (A)rmor : Message Upon Getting : Broadcast Upon Getting
+			
 			// Get all of the parts of the serialized string
 			String typeStr    = serialized.split(":")[0];
 			String levelStr   = serialized.split(":")[1];
 			String chanceStr  = serialized.split(":")[2];
 			String classesStr = serialized.split(":").length > 3 ? serialized.split(":")[3] : "TSA"; // Allow for any type if classes are omitted
+			String message    = serialized.split(":").length > 4 ? serialized.split(":")[4] : "";
+			String broadcast  = serialized.split(":").length > 5 ? serialized.split(":")[5] : "";
 			
 			int level, chance;
 			Enchantment type;
@@ -170,7 +183,7 @@ public class EnchantGUIConfig {
 			if (classList.size() == 0)
 				classList.addAll(Arrays.asList(new ItemClass[]{ ItemClass.ARMOR, ItemClass.TOOL, ItemClass.SWORD }));
 			
-			enchantments.add(new RandomEnchantment(type, level, classList.toArray(new ItemClass[]{}), chance));
+			enchantments.add(new RandomEnchantment(type, level, classList.toArray(new ItemClass[]{}), chance, message, broadcast));
 			
 		}
 		
@@ -184,12 +197,20 @@ public class EnchantGUIConfig {
 		public int level;
 		public ItemClass[] classes;
 		public int chance;
+		public String message;
+		public String broadcast;
 		
 		RandomEnchantment(Enchantment type, int level, ItemClass[] classes, int chance) {
+			this(type, level, classes, chance, "", "");
+		}
+		
+		RandomEnchantment(Enchantment type, int level, ItemClass[] classes, int chance, String message, String broadcast) {
 			this.type = type;
 			this.level = level;
 			this.classes = classes;
 			this.chance = chance;
+			this.message = message;
+			this.broadcast = broadcast;
 		}
 		
 	}

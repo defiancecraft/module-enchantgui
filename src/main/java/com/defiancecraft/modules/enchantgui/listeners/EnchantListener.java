@@ -160,8 +160,17 @@ public class EnchantListener implements Listener {
 				.collect(Collectors.toList());
 		
 		// If they were lucky enough to get a random enchantment, add it!
-		for (RandomEnchantment re : randoms)
+		for (RandomEnchantment re : randoms) {
 			e.getEnchantsToAdd().put(re.type, re.level);
+			
+			// Send message if set
+			if (re.message != null && !re.message.isEmpty())
+				e.getEnchanter().sendMessage(ChatColor.translateAlternateColorCodes('&', re.message));
+			
+			// Broadcast if set
+			if (re.broadcast != null && !re.broadcast.isEmpty())
+				Bukkit.getServer().broadcastMessage(ChatColor.translateAlternateColorCodes('&', re.broadcast));
+		}
 		
 	}
 	
