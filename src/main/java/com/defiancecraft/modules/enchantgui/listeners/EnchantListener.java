@@ -169,7 +169,7 @@ public class EnchantListener implements Listener {
 			
 			// Broadcast if set
 			if (re.broadcast != null && !re.broadcast.isEmpty())
-				Bukkit.getServer().broadcastMessage(ChatColor.translateAlternateColorCodes('&', re.broadcast));
+				Bukkit.getServer().broadcastMessage(ChatColor.translateAlternateColorCodes('&', re.broadcast).replace("{player}", e.getEnchanter().getName()));
 		}
 		
 	}
