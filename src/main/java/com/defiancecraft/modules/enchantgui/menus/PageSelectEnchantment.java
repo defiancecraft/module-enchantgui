@@ -14,7 +14,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
-import com.defiancecraft.core.api.Economy;
 import com.defiancecraft.core.menu.Menu;
 import com.defiancecraft.core.menu.impl.AbsoluteMenuLayout;
 import com.defiancecraft.core.menu.impl.SimpleMenuOption;
@@ -29,7 +28,6 @@ public class PageSelectEnchantment extends Menu {
 	private Plugin plugin;
 	private UUID playerUUID;
 	private String category;
-	private double playerBalance = 0;
 	
 	public PageSelectEnchantment(Plugin p, UUID uuid, String category) {
 		super(
@@ -40,22 +38,9 @@ public class PageSelectEnchantment extends Menu {
 		this.playerUUID = uuid;
 		this.category = category;
 		this.setCloseOnClickOutside(true);
-		this.calculateTokens();
 		this.init();
 	}
 
-	private void calculateTokens() {
-		
-		try {
-			playerBalance = Economy.getBalance(playerUUID);
-		} catch (Exception e) {}
-		
-	}
-	
-	private boolean hasTokens(double tokens) {
-		return playerBalance >= tokens;
-	}
-	
 	@Override
 	protected void addMenuOptions() {
 
@@ -98,7 +83,7 @@ public class PageSelectEnchantment extends Menu {
 					List<String> loreList = new ArrayList<String>(config.lore);
 					
 					// Player has perm, but no tokens
-					if (!hasTokens(levelConfig.cost)) {
+					if (player.getLevel() < levelConfig.cost) {
 						loreList.add(EnchantGUIPlugin.getConfiguration().enchantmentPoorLore);
 						usability = Usability.NO_MONEY;
 						
