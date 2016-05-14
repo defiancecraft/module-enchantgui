@@ -29,12 +29,6 @@ public class EnchantGUIPlugin extends JavaModule {
     	
     }
     
-    public void onDisable() {
-    	
-    	EnchantListener.restoreXpLevels();
-    	
-    }
-    
     public void reloadConfiguration() {
     	EnchantGUIPlugin.config = getConfig(EnchantGUIConfig.class);
     }
