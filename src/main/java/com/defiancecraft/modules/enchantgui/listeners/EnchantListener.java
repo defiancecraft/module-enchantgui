@@ -105,6 +105,7 @@ public class EnchantListener implements Listener {
 		// levels to be taken away from the enchanter (e.g. first button = -3 levels); we must then
 		// compensate for this.
 		e.getEnchanter().setLevel(e.getEnchanter().getLevel() - (cost - e.whichButton() - 1));
+		e.setExpLevelCost(0);
 		
 		ItemClass itemClass = ItemClass.getItemClass(e.getItem());
 		List<RandomEnchantment> randoms = EnchantGUIPlugin.getConfiguration().getRandomEnchantments();
