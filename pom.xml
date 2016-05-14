@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.defiancecraft.modules</groupId>
   <artifactId>EnchantGUI</artifactId>
-  <version>1.0.0</version>
+  <version>1.1.0</version>
   <name>EnchantGUI</name>
   <description>Provides means of enchanting via a GUI and via the traditional way.</description>
   <build>
