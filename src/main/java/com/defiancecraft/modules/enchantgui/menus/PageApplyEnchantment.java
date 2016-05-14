@@ -1,5 +1,6 @@
 package com.defiancecraft.modules.enchantgui.menus;
 
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.bukkit.ChatColor;
@@ -10,6 +11,9 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import com.defiancecraft.core.api.Economy;
+import com.defiancecraft.core.api.Economy.InsufficientFundsException;
+import com.defiancecraft.core.api.Economy.UserNotFoundException;
 import com.defiancecraft.core.menu.Menu;
 import com.defiancecraft.core.menu.MenuOption;
 import com.defiancecraft.core.menu.impl.AbsoluteMenuLayout;
@@ -67,6 +71,13 @@ public class PageApplyEnchantment extends Menu {
 			return new ItemStack(Material.AIR, 1);
 		}
 
+		private double getPlayerBalance(UUID u) {
+			try {
+				return Economy.getBalance(u);
+			} catch (Exception e) {}
+			return 0;
+		}
+		
 		@Override
 		public boolean onClick(Player player, InventoryClickEvent event) {
 			
@@ -86,13 +97,18 @@ public class PageApplyEnchantment extends Menu {
 			
 			// Check that they have the balance for the enchantment.
 			// If not, close the menu.
-			if (player.getLevel() < menu.cost) {
+			double balance = getPlayerBalance(player.getUniqueId());
+			if (balance < menu.cost) {
 				menu.closeMenu(player);
 				return true;
 			}
-
-			// Charge the player the cost
-			player.setLevel(player.getLevel() - (int)menu.cost);
+			
+			try {
+				Economy.withdraw(player.getName(), menu.cost);
+			// Shouldn't occur, but whatever.
+			} catch (UserNotFoundException | InsufficientFundsException e) {
+				e.printStackTrace();
+			}
 
 			// Allow 'downgrades'
 			if (cursor.getEnchantmentLevel(menu.enchantment) >=	 menu.level)
