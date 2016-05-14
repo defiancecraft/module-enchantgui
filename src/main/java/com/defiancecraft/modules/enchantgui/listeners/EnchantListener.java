@@ -87,12 +87,24 @@ public class EnchantListener implements Listener {
 	public void onEnchantItem(EnchantItemEvent e) {
 
 		EnchantGUIConfig config = EnchantGUIPlugin.getConfiguration();
+		int cost = new int[] { config.randomCost1, config.randomCost2, config.randomCost3 }
+			[ e.whichButton() ]; 
 		
 		// Set XP level cost to the correct cost
-		e.setExpLevelCost(
-			new int[] { config.randomCost1, config.randomCost2, config.randomCost3 }
-			[ e.whichButton() ]
-		);
+		e.setExpLevelCost(cost);
+
+		// Theoretically, the above line should have set the cost... but it doesn't, so
+		// we'll take away the levels manually.
+		if (e.getEnchanter().getLevel() < cost) {
+			e.setCancelled(true);
+			e.getEnchanter().closeInventory();
+			return;
+		}
+
+		// Note that the expression below is necessary, as vanilla functionality causes (whichButton + 1)
+		// levels to be taken away from the enchanter (e.g. first button = -3 levels); we must then
+		// compensate for this.
+		e.getEnchanter().setLevel(e.getEnchanter().getLevel() - (cost - e.whichButton() - 1));
 		
 		ItemClass itemClass = ItemClass.getItemClass(e.getItem());
 		List<RandomEnchantment> randoms = EnchantGUIPlugin.getConfiguration().getRandomEnchantments();
